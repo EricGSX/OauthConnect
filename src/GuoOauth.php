@@ -10,15 +10,23 @@ class GuoOauth
 {
     public $config = [];
 
-    public function __construct ()
+    public function __construct ($setConfig=[])
     {
-        $this->config = require_once('Config.php');
+        if(empty($setConfig) || $setConfig==null){
+            $this->config = require_once('Config.php');
+        }else{
+            $this->config = $setConfig;
+        }
     }
 
     //public function testConnect()
     //{
     //    return 'hello world!';
     //}
+    public function setConfig($setConfig=[])
+    {
+        $this->config = $setConfig;
+    }
 
     public function baidu()
     {
