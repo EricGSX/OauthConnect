@@ -8,13 +8,17 @@
 namespace Oauthconnect;
 class GuoOauth
 {
+    public $config = [];
+
     public function __construct ()
     {
-
+        $this->config = require_once('Config.php');
     }
 
     public function testConnect()
     {
         return 'hello world!';
     }
+
+
 }
