@@ -2,13 +2,13 @@
 require('autoload.php');
 use Oauthconnect\GuoOauth;
 $config = [
-    'BAIDU' => [
-        'BAIDU_ID' => '123',
-        'BAIDU_API_KEY' => '123',
-        'BAIDU_SECRET_KEY' => '123',
-        'BAIDU_REDIRECT_URI' => '33333333',
-    ]
+    'GITHUB'=> [
+        'GITHUB_ID' => '',
+        'GITHUB_CLIENTID' => '',
+        'GITHUB_SECRET_KEY' => '',
+        'GITHUB_REDIRECT_URI' => '',
+    ],
 ];
 $obj = new GuoOauth($config);
-$obj->setPlatForm('baidu');
+$obj->setPlatForm('github');
 $userindex = $obj->authCode('baidu');

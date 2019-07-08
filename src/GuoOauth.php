@@ -8,6 +8,15 @@
 namespace Oauthconnect;
 class GuoOauth
 {
+    /**
+     * Platform List:
+     *   baidu
+     *   github
+     *   gitee
+     *   qq
+     *   weibo
+     * 请严格按照以上平台名称进行初始化。
+     */
     public $config = [];
     public $platform;
 
@@ -37,6 +46,9 @@ class GuoOauth
             case 'baidu':
                 $this->baidu();
                 break;
+            case 'github':
+                $this->github();
+                break;
         }
     }
 
@@ -46,6 +58,9 @@ class GuoOauth
         switch ($platform){
             case 'baidu':
                 $userinfo = $this->baiduUserinfo();
+                break;
+            case 'github':
+                $userinfo = $this->githubUserinfo();
                 break;
         }
         return $userinfo;
@@ -116,6 +131,44 @@ class GuoOauth
         $response = curl_exec($curl);
         curl_close($curl);
         return $response;
+    }
+
+    public function github()
+    {
+        $clientId =$this->config['GITHUB']['GITHUB_CLIENTID'];
+        header("location:https://github.com/login/oauth/authorize?client_id=$clientId");
+    }
+
+    public function githubAccessToken()
+    {
+        try{
+            $code = $this->getCode();
+            $data = [
+                'client_id'=>$this->config['GITHUB']['GITHUB_CLIENTID'],
+                'client_secret'=>$this->config['GITHUB']['GITHUB_SECRET_KEY'],
+                'code'=>$code,
+                'redirect_uri'=>$this->config['GITHUB']['GITHUB_REDIRECT_URI'],
+                'grant_type'=>'authorization_code',
+            ];
+            $url = "https://github.com/login/oauth/access_token";
+            $res = $this->https_request($url,$data);
+            return $res;
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function githubUserinfo()
+    {
+        try{
+            $accessToken = $this->githubAccessToken();
+            $url  = 'https://api.github.com/user?'.$accessToken;
+            $res  = $this->https_request($url,null,true);
+            $result = json_decode($res, true);
+            return $result;
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
     }
 
 }
