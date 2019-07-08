@@ -1,0 +1,14 @@
+{
+    "name": "gsx/oauthconnect",
+    "description": "Third-pary login ,supprt WeChat,qq,weibo,baidu,gitee,github etc.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "GuoShiXin",
+            "email": "guoshixin@guosx.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
