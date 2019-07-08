@@ -9,6 +9,7 @@ namespace Oauthconnect;
 class GuoOauth
 {
     public $config = [];
+    public $platform;
 
     public function __construct ($setConfig=[])
     {
@@ -23,6 +24,33 @@ class GuoOauth
     //{
     //    return 'hello world!';
     //}
+
+    public function setPlatForm($platform='')
+    {
+        $this->platform = $platform;
+    }
+
+    public function authCode()
+    {
+        $platform = $this->platform;
+        switch ($platform){
+            case 'baidu':
+                $this->baidu();
+                break;
+        }
+    }
+
+    public function userinfo()
+    {
+        $platform = $this->platform;
+        switch ($platform){
+            case 'baidu':
+                $userinfo = $this->baiduUserinfo();
+                break;
+        }
+        return $userinfo;
+    }
+
     public function setConfig($setConfig=[])
     {
         $this->config = $setConfig;

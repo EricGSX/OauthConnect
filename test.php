@@ -10,5 +10,5 @@ $config = [
     ]
 ];
 $obj = new GuoOauth($config);
-$test = $obj->config;
-var_dump($test);
+$obj->setPlatForm('baidu');
+$userindex = $obj->authCode('baidu');
