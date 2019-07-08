@@ -13,7 +13,7 @@ class GuoOauth
 
     }
 
-    public function test()
+    public function testConnect()
     {
         return 'hello world!';
     }
