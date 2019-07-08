@@ -49,6 +49,9 @@ class GuoOauth
             case 'github':
                 $this->github();
                 break;
+            case 'gitee':
+                $this->gitee();
+                break;
         }
     }
 
@@ -61,6 +64,9 @@ class GuoOauth
                 break;
             case 'github':
                 $userinfo = $this->githubUserinfo();
+                break;
+            case 'gitee':
+                $userinfo = $this->giteeUserinfo();
                 break;
         }
         return $userinfo;
@@ -164,6 +170,45 @@ class GuoOauth
             $accessToken = $this->githubAccessToken();
             $url  = 'https://api.github.com/user?'.$accessToken;
             $res  = $this->https_request($url,null,true);
+            $result = json_decode($res, true);
+            return $result;
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function gitee()
+    {
+        $clientId = $this->config['GITEE']['GITEE_CLIENTID'];
+        $redirect_uri = $this->config['GITEE']['GITEE_REDIRECT_URI'];
+        header("location:https://gitee.com/oauth/authorize?client_id=$clientId&redirect_uri=$redirect_uri&response_type=code");
+    }
+
+    public function giteeAccessToken()
+    {
+        try{
+            $code = $this->getCode();
+            $data = [
+                'client_id'=>$this->config['GITEE']['GITEE_CLIENTID'],
+                'client_secret'=>$this->config['GITEE']['GITEE_SECRET_KEY'],
+                'code'=>$code,
+                'redirect_uri'=>$this->config['GITEE']['GITEE_REDIRECT_URI'],
+                'grant_type'=>'authorization_code',
+            ];
+            $url = "https://gitee.com/oauth/token";
+            $res = $this->https_request($url,$data);
+            return json_decode($res,true)['access_token'];
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function giteeUserinfo()
+    {
+        try{
+            $accessToken = $this->giteeAccessToken();
+            $url  = 'https://gitee.com/api/v5/user?access_token='.$accessToken;
+            $res  = $this->https_request($url);
             $result = json_decode($res, true);
             return $result;
         }catch (\Exception $e){

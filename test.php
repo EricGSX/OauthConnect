@@ -10,5 +10,5 @@ $config = [
     ],
 ];
 $obj = new GuoOauth($config);
-$obj->setPlatForm('github');
-$userindex = $obj->authCode('baidu');
+$obj->setPlatForm('gitee');
+$userindex = $obj->authCode();
