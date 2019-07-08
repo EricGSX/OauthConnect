@@ -6,9 +6,13 @@
     "authors": [
         {
             "name": "GuoShiXin",
-            "email": "guoshixin@guosx.com"
+            "email": "guoshixin@guosx.com",
+            "homepage": "https://www.guosx.com"
         }
     ],
     "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {"OauthConnect\\": "src/"}
+    },
     "require": {}
 }
