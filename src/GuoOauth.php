@@ -52,6 +52,12 @@ class GuoOauth
             case 'gitee':
                 $this->gitee();
                 break;
+            case 'qq':
+                $this->qq();
+                break;
+            case 'weibo':
+                $this->weibo();
+                break;
         }
     }
 
@@ -68,6 +74,11 @@ class GuoOauth
             case 'gitee':
                 $userinfo = $this->giteeUserinfo();
                 break;
+            case 'qq':
+                $userinfo = $this->getQqUserinfo();
+                break;
+            case 'weibo':
+                $userinfo = $this->getWeiboUserinfo();
         }
         return $userinfo;
     }
@@ -216,4 +227,98 @@ class GuoOauth
         }
     }
 
+    public function qq()
+    {
+        $app_id = $this->config['QQ']['QQ_APP_ID'];
+        $redirect_uri = $this->config['QQ']['QQ_REDIRECT_URI'];
+        header("location:https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=$app_id&redirect_uri=$redirect_uri");
+    }
+
+    public function qqAccessToken()
+    {
+        try{
+            $client_id = $this->config['QQ']['QQ_APP_ID'];
+            $client_secret = $this->config['QQ']['QQ_APP_KEY'];
+            $redirect_uri = $this->config['QQ']['QQ_REDIRECT_URI'];
+            $code = $this->getCode();
+            $url = "https://graph.qq.com/oauth2.0/token?grant_type=authorization_code&client_id=$client_id&client_secret=$client_secret&code=$code&redirect_uri=$redirect_uri";
+            $res = $this->https_request($url);
+            return $res;
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function getQqOpenID()
+    {
+        try{
+            $token_str = $this->qqAccessToken();
+            $token_arr = explode('&',$token_str);
+            $token = ltrim($token_arr[0],'access_token=');
+            $url = "https://graph.qq.com/oauth2.0/me?access_token=$token";
+            $res = $this->https_request($url);
+            $callback = trim(trim($res),'callback');
+            $callback = ltrim($callback,'(');
+            $callback = rtrim($callback,');');
+            return json_decode($callback,TRUE);
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function getQqUserinfo()
+    {
+        try{
+            $token_str = $this->qqAccessToken();
+            $token_arr = explode('&',$token_str);
+            $token = ltrim($token_arr[0],'access_token=');
+            $openid = $this->getQqOpenID();
+            $client_id = $openid['client_id'];
+            $openid_str = $openid['openid'];
+            $url = "https://graph.qq.com/user/get_user_info?access_token=$token&oauth_consumer_key=$client_id&openid=$openid_str";
+            $res = $this->https_request($url);
+            return $res;
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function weibo()
+    {
+        $client_id =  $this->config['WEIBO']['WEIBO_APP_KEY'];
+        $redirect_uri = $this->config['WEIBO']['WEIBO_REDIRECT_URI'];
+        header("location:https://api.weibo.com/oauth2/authorize?client_id=$client_id&response_type=code&redirect_uri=$redirect_uri");
+    }
+
+    public function weiboAccessToken()
+    {
+        try{
+            $code = $this->getCode();
+            $data = [
+                'user_post' => 'null_post'
+            ];
+            $client_id = $this->config['WEIBO']['WEIBO_APP_KEY'];
+            $client_secret = $this->config['WEIBO']['WEIBO_APP_SECRET'];
+            $redirect_uri = $this->config['WEIBO']['WEIBO_REDIRECT_URI'];
+            $url = "https://api.weibo.com/oauth2/access_token?client_id=$client_id&client_secret=$client_secret&grant_type=authorization_code&code=$code&redirect_uri=$redirect_uri";
+            $res = $this->https_request($url,$data);
+            return json_decode($res,true);
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function getWeiboUserinfo()
+    {
+        try{
+            $accessToken = $this->weiboAccessToken();
+            $token = $accessToken['access_token'];
+            $uid = $accessToken['uid'];
+            $url = "https://api.weibo.com/2/users/show.json?access_token=$token&uid=$uid";
+            $userinfo = $this->https_request($url);
+            return $userinfo;
+        }catch (\Exception $e){
+            return $e->getMessage();
+        }
+    }
 }
