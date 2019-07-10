@@ -10,7 +10,7 @@
             "homepage": "https://www.guosx.com"
         }
     ],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {"OauthConnect\\": "src/"}
     },

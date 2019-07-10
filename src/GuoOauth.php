@@ -22,7 +22,7 @@ class GuoOauth
 
     public function __construct ($setConfig=[])
     {
-        if(empty($setConfig) || $setConfig==null){
+        if((empty($setConfig) || $setConfig==null) && empty($this->config)){
             $this->config = require_once('Config.php');
         }else{
             $this->config = $setConfig;
