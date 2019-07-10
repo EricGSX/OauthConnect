@@ -9,6 +9,8 @@ $config = [
         'BAIDU_REDIRECT_URI' => '',
     ],
 ];
-$obj = new GuoOauth($config);
+$obj = new GuoOauth();
 $obj->setPlatForm('baidu');
-$userindex = $obj->authCode();
+$obj->setConfig($config);
+$userindex = $obj->userinfo();
+var_dump($userindex);

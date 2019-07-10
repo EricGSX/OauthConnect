@@ -22,7 +22,7 @@ class GuoOauth
 
     public function __construct ($setConfig=[])
     {
-        if((empty($setConfig) || $setConfig==null) && empty($this->config)){
+        if((empty($setConfig) || $setConfig==null)){
             $this->config = require_once('Config.php');
         }else{
             $this->config = $setConfig;
@@ -37,6 +37,11 @@ class GuoOauth
     public function setPlatForm($platform='')
     {
         $this->platform = $platform;
+    }
+
+    public function setConfig($setConfig=[])
+    {
+        $this->config = $setConfig;
     }
 
     public function authCode()
@@ -81,11 +86,6 @@ class GuoOauth
                 $userinfo = $this->getWeiboUserinfo();
         }
         return $userinfo;
-    }
-
-    public function setConfig($setConfig=[])
-    {
-        $this->config = $setConfig;
     }
 
     public function baidu()

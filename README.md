@@ -23,7 +23,7 @@ obj->authCode();
 #### 回调页面调用
 ~~~
 use Oauthconnect\GuoOauth;
-$obj = new GuoOauth($config);
+$obj = new GuoOauth($config);  # 也可以使用$obj->setConfig($config);
 $userinfo = $obj->userinfo();
 ~~~
 
