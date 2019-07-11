@@ -14,5 +14,7 @@
     "autoload": {
         "psr-4": {"OauthConnect\\": "src/"}
     },
-    "require": {}
+    "require": {
+        "php": ">=5.6"
+    }
 }
